@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Visualização do Meu Perfil TAG NFC — Informações de acolhimento e comunicação rápida.">
+
+    <title>TAG — Meu Perfil Digital</title>
+
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .profile-page-header {
+            padding: 40px 0 24px 0;
+            text-align: center;
+        }
+
+        .profile-page-title {
+            font-size: 34px;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .profile-page-subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            max-width: 580px;
+            margin: 0 auto;
+        }
+
+        /* Empty state view */
+        .empty-state-box {
+            display: none;
+            background: white;
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 60px 30px;
+            text-align: center;
+            max-width: 580px;
+            margin: 0 auto;
+        }
+
+        .empty-state-box.active {
+            display: block;
+        }
+
+        .empty-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: var(--accent-light);
+            color: var(--accent);
+            display: grid;
+            place-items: center;
+            margin: 0 auto 20px auto;
+        }
+
+        /* NFC Scan Simulation Effect */
+        .scan-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 3000;
+            display: none;
+            place-items: center;
+            flex-direction: column;
+            color: white;
+            padding: 20px;
+        }
+
+        .scan-overlay.active {
+            display: flex;
+        }
+
+        .phone-mockup {
+            width: 220px;
+            height: 380px;
+            border: 4px solid #38BDF8;
+            border-radius: 36px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 0 50px rgba(56, 189, 248, 0.4);
+            animation: phoneScan 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes phoneScan {
+            0% { transform: translateY(-10px) scale(0.98); }
+            100% { transform: translateY(10px) scale(1.02); }
+        }
+
+        .nfc-ring {
+            width: 80px;
+            height: 80px;
+            border: 3px solid #38BDF8;
+            border-radius: 50%;
+            position: absolute;
+            animation: ripple 1.6s infinite;
+        }
+
+        @keyframes ripple {
+            0% { transform: scale(0.5); opacity: 1; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+
+        /* Toast notification */
+        .toast-notify {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary-dark);
+            color: white;
+            padding: 14px 22px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: var(--transition);
+            z-index: 2500;
+        }
+
+        .toast-notify.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- CABEÇALHO -->
+    <header class="site-header">
+        <div class="header-inner">
+            <div class="logo-wrapper">
+                <a href="index.html" class="brand-logo">
+                    <span class="brand-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 8.32a7.43 7.43 0 0 1 0 7.36"></path>
+                            <path d="M9.46 6.21a11.76 11.76 0 0 1 0 11.58"></path>
+                            <path d="M12.91 4.1a15.91 15.91 0 0 1 0 15.8"></path>
+                            <path d="M16.37 2a20.16 20.16 0 0 1 0 20"></path>
+                        </svg>
+                    </span>
+                    TAG
+                </a>
+                <span class="brand-badge">Meu Perfil</span>
+            </div>
+
+            <nav class="main-nav" aria-label="Navegação Principal">
+                <a href="index.html" class="nav-link">Início</a>
+                <a href="cadastro.html" class="nav-link">Cadastrar Dados</a>
+                <a href="perfil.html" class="nav-link active">Meu Perfil</a>
+            </nav>
+
+            <div class="nav-actions">
+                <a href="cadastro.html" class="btn btn-secondary btn-sm">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Editar Perfil
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="section-wrapper" style="padding-top: 20px;">
+        <div class="container">
+
+            <div class="profile-page-header">
+                <span class="section-tag">Cartão Digital de Identificação</span>
+                <h1 class="profile-page-title">Perfil Vinculado à TAG NFC</h1>
+                <p class="profile-page-subtitle">
+                    Esta é a tela exibida automaticamente ao encostar qualquer celular na sua tag NFC.
+                </p>
+            </div>
+
+            <!-- ESTADO: SEM PERFIL CADASTRADO -->
+            <div id="emptyState" class="empty-state-box">
+                <div class="empty-icon">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <line x1="19" y1="8" x2="19" y2="14"></line>
+                        <line x1="22" y1="11" x2="16" y2="11"></line>
+                    </svg>
+                </div>
+                <h2 style="font-size: 22px; margin-bottom: 8px;">Nenhum perfil cadastrado ainda</h2>
+                <p style="margin-bottom: 28px; font-size: 15px;">
+                    Preencha o formulário para gerar seu cartão digital ou carregue dados de demonstração para testar agora.
+                </p>
+                <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                    <a href="cadastro.html" class="btn btn-accent">
+                        Preencher Cadastro
+                    </a>
+                    <button type="button" id="loadSampleBtn" class="btn btn-secondary">
+                        Carregar Perfil de Teste
+                    </button>
+                </div>
+            </div>
+
+            <!-- PERFIL DIGITAL (NFC BADGE) -->
+            <div id="profileShell" class="profile-shell" style="display: none;">
+                <div class="nfc-badge-card">
+
+                    <!-- Barra Superior -->
+                    <div class="badge-top-bar">
+                        <div class="badge-nfc-status">
+                            <span class="pulse-dot"></span>
+                            TAG NFC IDENTIFICADA
+                        </div>
+                        <span style="font-size: 12px; opacity: 0.8; letter-spacing: 0.5px;">PROTOCOLO ACOLHE</span>
+                    </div>
+
+                    <!-- Corpo do Perfil -->
+                    <div class="badge-body">
+
+                        <!-- Pessoa -->
+                        <div class="badge-person">
+                            <div id="avatarCircle" class="avatar-circle">
+                                TG
+                            </div>
+                            <div class="badge-name-block">
+                                <h2 id="viewNome">Nome do Portador</h2>
+                                <div id="viewNomeSocial" class="badge-social-name"></div>
+                                <div id="viewIdade" style="font-size: 13px; color: var(--text-muted); margin-top: 4px;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Comunicação Principal -->
+                        <div class="badge-section">
+                            <div class="badge-label">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                                Forma de Comunicação
+                            </div>
+                            <div id="viewComunicacao" class="badge-pill">
+                                Comunicação verbal
+                            </div>
+                        </div>
+
+                        <!-- O que ajuda na comunicação -->
+                        <div class="badge-section" id="sectionDicas" style="display: none;">
+                            <div class="badge-label">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                </svg>
+                                Como facilitar nossa interação
+                            </div>
+                            <div id="viewDicas" class="badge-content-box">
+                                Nenhuma orientação informada.
+                            </div>
+                        </div>
+
+                        <!-- Sensibilidades e Necessidades -->
+                        <div class="badge-section" id="sectionSensibilidades" style="display: none;">
+                            <div class="badge-label">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                </svg>
+                                Sensibilidades & Cuidados Importantes
+                            </div>
+                            <div id="viewSensibilidades" class="badge-content-box">
+                                Nenhuma informação cadastrada.
+                            </div>
+                        </div>
+
+                        <!-- Orientações em Crise -->
+                        <div class="badge-section" id="sectionCrise" style="display: none;">
+                            <div class="badge-label">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                </svg>
+                                Em caso de crise ou desorganização
+                            </div>
+                            <div id="viewCrise" class="badge-content-box" style="border-left: 4px solid var(--accent); background: #F8FAFC;">
+                                Nenhuma orientação cadastrada.
+                            </div>
+                        </div>
+
+                        <!-- Contato de Emergência -->
+                        <div class="badge-section" id="sectionContato" style="display: none;">
+                            <div class="badge-label">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                </svg>
+                                Contato de Apoio / Emergência
+                            </div>
+                            <div class="emergency-contact-box">
+                                <div class="emergency-info">
+                                    <strong id="viewContatoNome">Nome do Contato</strong>
+                                    <span id="viewContatoTelefone">Telefone não informado</span>
+                                </div>
+                                <a id="btnLigarContato" href="#" class="btn btn-primary btn-sm">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                    </svg>
+                                    Ligar Agora
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Nota de Rodapé do Cartão -->
+                    <div class="badge-footer-note">
+                        Informações autorizadas pelo portador para acolhimento e suporte seguro.
+                    </div>
+
+                </div>
+
+                <!-- CONTROLES E AÇÕES -->
+                <div class="profile-controls">
+                    <button type="button" id="btnSimularNFC" class="btn btn-accent">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 8.32a7.43 7.43 0 0 1 0 7.36"></path>
+                            <path d="M9.46 6.21a11.76 11.76 0 0 1 0 11.58"></path>
+                            <path d="M12.91 4.1a15.91 15.91 0 0 1 0 15.8"></path>
+                        </svg>
+                        Simular Toque NFC
+                    </button>
+
+                    <a href="cadastro.html" class="btn btn-secondary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Editar Dados
+                    </a>
+
+                    <button type="button" id="btnCompartilhar" class="btn btn-secondary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                        Compartilhar Link
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- SIMULADOR NFC OVERLAY -->
+    <div id="scanOverlay" class="scan-overlay">
+        <div class="phone-mockup">
+            <div class="nfc-ring"></div>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 8.32a7.43 7.43 0 0 1 0 7.36"></path>
+                <path d="M9.46 6.21a11.76 11.76 0 0 1 0 11.58"></path>
+                <path d="M12.91 4.1a15.91 15.91 0 0 1 0 15.8"></path>
+            </svg>
+        </div>
+        <h3 style="font-size: 22px; margin-top: 24px; color: white;">Aproximando Smartphone...</h3>
+        <p style="color: #94A3B8; font-size: 15px; margin-top: 6px;">Leitura da TAG NFC realizada com sucesso!</p>
+    </div>
+
+    <!-- TOAST DE NOTIFICAÇÃO -->
+    <div id="toastNotify" class="toast-notify">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <span id="toastMessage">Link copiado para a área de transferência!</span>
+    </div>
+
+    <!-- RODAPÉ -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                TAG — Acesso que acolhe
+            </div>
+            <div class="footer-copy">
+                Perfil otimizado para navegadores móveis e suporte por aproximação NFC.
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPT DA PÁGINA -->
+    <script>
+        const STORAGE_KEY = "tag_profile_data";
+        const emptyState = document.getElementById("emptyState");
+        const profileShell = document.getElementById("profileShell");
+        const loadSampleBtn = document.getElementById("loadSampleBtn");
+        const btnSimularNFC = document.getElementById("btnSimularNFC");
+        const scanOverlay = document.getElementById("scanOverlay");
+        const btnCompartilhar = document.getElementById("btnCompartilhar");
+        const toastNotify = document.getElementById("toastNotify");
+        const toastMessage = document.getElementById("toastMessage");
+
+        function showToast(message) {
+            toastMessage.textContent = message;
+            toastNotify.classList.add("show");
+            setTimeout(() => {
+                toastNotify.classList.remove("show");
+            }, 3000);
+        }
+
+        function getInitials(name) {
+            if (!name) return "TG";
+            const parts = name.trim().split(" ");
+            if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+            return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+        }
+
+        function renderProfile(data) {
+            if (!data || !data.nome) {
+                emptyState.classList.add("active");
+                profileShell.style.display = "none";
+                return;
+            }
+
+            emptyState.classList.remove("active");
+            profileShell.style.display = "block";
+
+            // Iniciais e Nome
+            document.getElementById("avatarCircle").textContent = getInitials(data.nome);
+            document.getElementById("viewNome").textContent = data.nome;
+
+            // Nome social
+            const nomeSocialEl = document.getElementById("viewNomeSocial");
+            if (data.nomeSocial) {
+                nomeSocialEl.textContent = `Prefere ser chamado(a) de: "${data.nomeSocial}"`;
+                nomeSocialEl.style.display = "block";
+            } else {
+                nomeSocialEl.style.display = "none";
+            }
+
+            // Idade
+            const idadeEl = document.getElementById("viewIdade");
+            if (data.idade) {
+                idadeEl.textContent = `${data.idade} anos`;
+                idadeEl.style.display = "block";
+            } else {
+                idadeEl.style.display = "none";
+            }
+
+            // Forma de Comunicação
+            document.getElementById("viewComunicacao").textContent = data.comunicacao || "Comunicação verbal";
+
+            // Dicas de comunicação
+            const secDicas = document.getElementById("sectionDicas");
+            if (data.dicasComunicacao) {
+                document.getElementById("viewDicas").textContent = data.dicasComunicacao;
+                secDicas.style.display = "block";
+            } else {
+                secDicas.style.display = "none";
+            }
+
+            // Sensibilidades
+            const secSens = document.getElementById("sectionSensibilidades");
+            if (data.sensibilidades) {
+                document.getElementById("viewSensibilidades").textContent = data.sensibilidades;
+                secSens.style.display = "block";
+            } else {
+                secSens.style.display = "none";
+            }
+
+            // Orientações em Crise
+            const secCrise = document.getElementById("sectionCrise");
+            if (data.necessidadesCrise) {
+                document.getElementById("viewCrise").textContent = data.necessidadesCrise;
+                secCrise.style.display = "block";
+            } else {
+                secCrise.style.display = "none";
+            }
+
+            // Contato de emergência
+            const secContato = document.getElementById("sectionContato");
+            if (data.contatoNome || data.contatoTelefone) {
+                document.getElementById("viewContatoNome").textContent = data.contatoNome || "Contato de Apoio";
+                document.getElementById("viewContatoTelefone").textContent = data.contatoTelefone || "Telefone não informado";
+                
+                const btnLigar = document.getElementById("btnLigarContato");
+                if (data.contatoTelefone) {
+                    const cleanPhone = data.contatoTelefone.replace(/\D/g, "");
+                    btnLigar.href = `tel:${cleanPhone}`;
+                    btnLigar.style.display = "inline-flex";
+                } else {
+                    btnLigar.style.display = "none";
+                }
+                secContato.style.display = "block";
+            } else {
+                secContato.style.display = "none";
+            }
+        }
+
+        // Carrega dados do localStorage
+        window.addEventListener("DOMContentLoaded", () => {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    renderProfile(data);
+                } catch (e) {
+                    console.error("Erro ao ler perfil:", e);
+                    renderProfile(null);
+                }
+            } else {
+                renderProfile(null);
+            }
+        });
+
+        // Carregar Perfil de Demonstração
+        loadSampleBtn.addEventListener("click", () => {
+            const sampleData = {
+                nome: "Gabriel Henrique da Silva",
+                nomeSocial: "Biel",
+                idade: "24",
+                comunicacao: "Comunicação verbal com tempo de resposta",
+                dicasComunicacao: "Fale com clareza e de forma direta. Aguarde alguns segundos após uma pergunta para que eu consiga processar e responder com calma. Evite insistir no contato visual fixo.",
+                sensibilidades: "Sensibilidade intensa a luzes fluorescentes muito fortes e ruídos repentinos/estridentes (alarmes, buzinas, multidões). Evite toques físicos sem aviso prévio.",
+                necessidadesCrise: "Caso eu entre em sobrecarga sensorial: por favor, me direcione para um espaço calmo e silencioso com menos luz. Deixe-me usar meus fones abafadores. Não faça muitas perguntas ao mesmo tempo.",
+                contatoNome: "Maria da Silva (Mãe)",
+                contatoTelefone: "(11) 98765-4321",
+                updatedAt: new Date().toISOString()
+            };
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(sampleData));
+            renderProfile(sampleData);
+            showToast("Perfil de exemplo carregado com sucesso!");
+        });
+
+        // Simulação NFC
+        btnSimularNFC.addEventListener("click", () => {
+            scanOverlay.classList.add("active");
+            if (navigator.vibrate) {
+                navigator.vibrate([100, 50, 100]);
+            }
+            setTimeout(() => {
+                scanOverlay.classList.remove("active");
+                showToast("TAG NFC lida com sucesso pelo dispositivo!");
+            }, 1800);
+        });
+
+        // Compartilhar Perfil
+        btnCompartilhar.addEventListener("click", async () => {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: "Meu Perfil TAG NFC",
+                        text: "Acesse as informações do meu perfil TAG para acolhimento e comunicação rápida.",
+                        url: window.location.href
+                    });
+                } catch (err) {
+                    // cancelado pelo usuário
+                }
+            } else {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    showToast("Link do perfil copiado para a área de transferência!");
+                }).catch(() => {
+                    showToast("Não foi possível copiar o link.");
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

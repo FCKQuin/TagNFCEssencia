@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TAG — Solução baseada em NFC para conectar, acolher e facilitar a comunicação de pessoas neurodivergentes.">
+
+    <title>TAG — Acesso que acolhe | Início</title>
+
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Custom Hero Styles for Landing Page */
+        .hero-banner {
+            padding: 90px 0 80px 0;
+            background: radial-gradient(circle at 80% 20%, #E0F2FE 0%, #F8FAFC 60%);
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            align-items: center;
+            gap: 50px;
+        }
+
+        .hero-title {
+            font-size: 50px;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -1.5px;
+            margin-bottom: 22px;
+        }
+
+        .hero-title span {
+            background: linear-gradient(135deg, var(--accent), var(--accent-teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 19px;
+            line-height: 1.6;
+            margin-bottom: 34px;
+            color: var(--text-muted);
+            max-width: 560px;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* Interactive NFC Physical Card Mockup */
+        .nfc-mockup-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .nfc-card-visual {
+            width: 320px;
+            height: 320px;
+            background: linear-gradient(145deg, #1E293B, #0F172A);
+            border-radius: 28px;
+            padding: 30px;
+            color: white;
+            box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.4), 0 0 30px rgba(37, 99, 235, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .nfc-card-visual:hover {
+            transform: translateY(-6px) rotate(1deg);
+            box-shadow: 0 28px 50px -10px rgba(15, 23, 42, 0.5), 0 0 40px rgba(37, 99, 235, 0.35);
+        }
+
+        .nfc-chip-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nfc-waves {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .wave-bar {
+            width: 4px;
+            background: #38BDF8;
+            border-radius: 4px;
+            animation: waveBounce 1.4s ease-in-out infinite alternate;
+        }
+        .wave-bar:nth-child(1) { height: 12px; animation-delay: 0.1s; }
+        .wave-bar:nth-child(2) { height: 20px; animation-delay: 0.2s; }
+        .wave-bar:nth-child(3) { height: 28px; animation-delay: 0.3s; }
+        .wave-bar:nth-child(4) { height: 18px; animation-delay: 0.4s; }
+
+        @keyframes waveBounce {
+            0% { transform: scaleY(0.7); opacity: 0.6; }
+            100% { transform: scaleY(1.3); opacity: 1; }
+        }
+
+        .nfc-card-center {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .nfc-logo-badge {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+
+        .nfc-instruction {
+            font-size: 13px;
+            color: #94A3B8;
+            letter-spacing: 0.5px;
+        }
+
+        .nfc-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #64748B;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 14px;
+        }
+
+        /* Final CTA Box */
+        .cta-box {
+            background: linear-gradient(135deg, #1E293B, #0F172A);
+            color: white;
+            border-radius: var(--radius-lg);
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .cta-box h2 {
+            color: white;
+            font-size: 34px;
+            margin-bottom: 16px;
+        }
+
+        .cta-box p {
+            color: #94A3B8;
+            font-size: 18px;
+            max-width: 580px;
+            margin: 0 auto 30px auto;
+        }
+
+        @media (max-width: 900px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .hero-subtitle {
+                margin: 0 auto 30px auto;
+            }
+            .hero-cta-group {
+                justify-content: center;
+            }
+            .hero-title {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- CABEÇALHO -->
+    <header class="site-header">
+        <div class="header-inner">
+            <div class="logo-wrapper">
+                <a href="index.html" class="brand-logo">
+                    <span class="brand-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 8.32a7.43 7.43 0 0 1 0 7.36"></path>
+                            <path d="M9.46 6.21a11.76 11.76 0 0 1 0 11.58"></path>
+                            <path d="M12.91 4.1a15.91 15.91 0 0 1 0 15.8"></path>
+                            <path d="M16.37 2a20.16 20.16 0 0 1 0 20"></path>
+                        </svg>
+                    </span>
+                    TAG
+                </a>
+                <span class="brand-badge">Acesso que acolhe</span>
+            </div>
+
+            <nav class="main-nav" aria-label="Navegação Principal">
+                <a href="index.html" class="nav-link active">Início</a>
+                <a href="#sobre" class="nav-link">Sobre</a>
+                <a href="#funciona" class="nav-link">Como Funciona</a>
+                <a href="#futuro" class="nav-link">Possibilidades</a>
+            </nav>
+
+            <div class="nav-actions">
+                <a href="perfil.html" class="btn btn-secondary btn-sm">Meu Perfil</a>
+                <a href="cadastro.html" class="btn btn-primary btn-sm">Criar Perfil</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main id="conteudo-principal">
+
+        <!-- HERO SECTION -->
+        <section class="hero-banner">
+            <div class="container hero-grid">
+                <div class="hero-content">
+                    <span class="section-tag">Tecnologia com Propósito</span>
+                    <h1 class="hero-title">
+                        Informação que aproxima. <span>Acesso que acolhe.</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Uma solução baseada em cartões e tags NFC para facilitar a comunicação, autonomia e o atendimento respeitoso de pessoas neurodivergentes em qualquer situação.
+                    </p>
+                    <div class="hero-cta-group">
+                        <a href="cadastro.html" class="btn btn-accent btn-lg">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <line x1="19" y1="8" x2="19" y2="14"></line>
+                                <line x1="22" y1="11" x2="16" y2="11"></line>
+                            </svg>
+                            Criar meu perfil
+                        </a>
+                        <a href="perfil.html" class="btn btn-secondary btn-lg">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                            </svg>
+                            Ver demonstração
+                        </a>
+                    </div>
+                </div>
+
+                <div class="nfc-mockup-wrapper">
+                    <div class="nfc-card-visual" onclick="window.location.href='perfil.html'" title="Clique para ver o perfil associado à TAG">
+                        <div class="nfc-chip-row">
+                            <svg width="34" height="26" viewBox="0 0 34 26" fill="none">
+                                <rect width="34" height="26" rx="4" fill="#E2E8F0" fill-opacity="0.2"/>
+                                <path d="M8 13H26M17 4V22" stroke="#94A3B8" stroke-width="1.5"/>
+                            </svg>
+                            <div class="nfc-waves">
+                                <span class="wave-bar"></span>
+                                <span class="wave-bar"></span>
+                                <span class="wave-bar"></span>
+                                <span class="wave-bar"></span>
+                            </div>
+                        </div>
+
+                        <div class="nfc-card-center">
+                            <div class="nfc-logo-badge">TAG NFC</div>
+                            <div class="nfc-instruction">Aproxime o celular para abrir o perfil</div>
+                        </div>
+
+                        <div class="nfc-card-footer">
+                            <span>PROTOCOLO ACOLHE</span>
+                            <span>TOQUE PARA TESTAR</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO: O PROBLEMA / SOBRE -->
+        <section id="sobre" class="section-wrapper">
+            <div class="container">
+                <div class="section-title-wrap">
+                    <span class="section-tag">O Propósito</span>
+                    <h2 class="section-title">Por que a TAG faz a diferença?</h2>
+                    <p class="section-desc">
+                        Em momentos de sobrecarga sensorial ou atendimento emergencial, transmitir necessidades nem sempre é fácil. A TAG é a ponte que garante dignidade e rapidez.
+                    </p>
+                </div>
+
+                <div class="grid-3">
+                    <article class="card-item">
+                        <div class="card-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </div>
+                        <h3>Comunicação Adaptada</h3>
+                        <p>
+                            Permite especificar preferências como comunicação verbal, alternativa ou necessidade de tempo de resposta sem pressão.
+                        </p>
+                    </article>
+
+                    <article class="card-item">
+                        <div class="card-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            </svg>
+                        </div>
+                        <h3>Privacidade & Controle</h3>
+                        <p>
+                            Você decide exatamente quais dados são visíveis. A aproximação só ocorre com permissão física e contato próximo.
+                        </p>
+                    </article>
+
+                    <article class="card-item">
+                        <div class="card-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                            </svg>
+                        </div>
+                        <h3>Acolhimento Imediato</h3>
+                        <p>
+                            Médicos, atendentes e educadores compreendem de imediato como agir para oferecer um atendimento empático e seguro.
+                        </p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO: COMO FUNCIONA -->
+        <section id="funciona" class="section-wrapper" style="background-color: #F1F5F9;">
+            <div class="container">
+                <div class="section-title-wrap">
+                    <span class="section-tag">Passo a Passo</span>
+                    <h2 class="section-title">Como a TAG funciona na prática?</h2>
+                    <p class="section-desc">
+                        Um fluxo sem fricção pensado para ser rápido, intuitivo e acessível em qualquer smartphone.
+                    </p>
+                </div>
+
+                <ol class="steps-pipeline">
+                    <li class="step-card">
+                        <span class="step-number">1</span>
+                        <h3>Criar o Perfil</h3>
+                        <p>Cadastre as informações importantes, preferências de comunicação e contatos de apoio no formulário.</p>
+                    </li>
+
+                    <li class="step-card">
+                        <span class="step-number">2</span>
+                        <h3>Vincular à TAG</h3>
+                        <p>O perfil digital é conectado a um cartão, chaveiro ou pulseira NFC física.</p>
+                    </li>
+
+                    <li class="step-card">
+                        <span class="step-number">3</span>
+                        <h3>Aproximar o Celular</h3>
+                        <p>Qualquer smartphone compatível lê a TAG por aproximação, sem necessidade de baixar aplicativos.</p>
+                    </li>
+
+                    <li class="step-card">
+                        <span class="step-number">4</span>
+                        <h3>Acesso Acolhedor</h3>
+                        <p>As orientações aparecem na tela de forma limpa, garantindo um suporte imediato e humano.</p>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- SEÇÃO: POSSIBILIDADES FUTURAS -->
+        <section id="futuro" class="section-wrapper">
+            <div class="container">
+                <div class="section-title-wrap">
+                    <span class="section-tag">Evolução</span>
+                    <h2 class="section-title">Possibilidades Futuras</h2>
+                    <p class="section-desc">
+                        A tecnologia NFC abre caminhos para integrar suporte em múltiplos ambientes do dia a dia.
+                    </p>
+                </div>
+
+                <div class="grid-3">
+                    <article class="card-item">
+                        <div class="card-icon" style="background: var(--accent-teal-light); color: var(--accent-teal);">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="7"></circle>
+                                <polyline points="12 9 12 12 13.5 13.5"></polyline>
+                                <path d="M16.51 17.35l-.35 3.83a2 2 0 0 1-2 1.82H9.83a2 2 0 0 1-2-1.82l-.35-3.83m.01-10.7l.35-3.83A2 2 0 0 1 9.83 1h4.35a2 2 0 0 1 2 1.82l.35 3.83"></path>
+                            </svg>
+                        </div>
+                        <h3>Pulseiras e Crachás</h3>
+                        <p>
+                            Acessórios discretos e resistentes à água para uso diário em escolas, shoppings e transportes públicos.
+                        </p>
+                    </article>
+
+                    <article class="card-item">
+                        <div class="card-icon" style="background: #FDF2F8; color: #DB2777;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                                <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                            </svg>
+                        </div>
+                        <h3>Plataforma e Aplicativo</h3>
+                        <p>
+                            Gerenciamento de múltiplos perfis por familiares, com atualizações instantâneas de necessidades e médicos.
+                        </p>
+                    </article>
+
+                    <article class="card-item">
+                        <div class="card-icon" style="background: #FEF3C7; color: #D97706;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </div>
+                        <h3>Rede de Locais Amigos</h3>
+                        <p>
+                            Treinamento para hospitais, aeroportos e serviços para identificarem e atenderem portadores de TAG prioritariamente.
+                        </p>
+                    </article>
+                </div>
+
+                <!-- BANNER FINAL DE CADASTRO -->
+                <div style="margin-top: 70px;">
+                    <div class="cta-box">
+                        <h2>Pronto para criar sua TAG personalizada?</h2>
+                        <p>Leva menos de dois minutos para preencher suas informações essenciais e ter seu perfil digital pronto para uso.</p>
+                        <a href="cadastro.html" class="btn btn-accent btn-lg">
+                            Cadastrar Informações Agora
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <span class="brand-icon" style="width: 28px; height: 28px; font-size: 14px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 8.32a7.43 7.43 0 0 1 0 7.36"></path>
+                        <path d="M9.46 6.21a11.76 11.76 0 0 1 0 11.58"></path>
+                    </svg>
+                </span>
+                TAG — Acesso que acolhe
+            </div>
+
+            <div class="footer-copy">
+                Uma pequena tecnologia para facilitar grandes encontros. &copy; 2026
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
